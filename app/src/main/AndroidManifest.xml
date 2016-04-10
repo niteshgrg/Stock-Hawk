@@ -45,6 +45,7 @@
             android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
             android:name="com.sam_chordas.android.stockhawk.data.generated.QuoteProvider"
             android:exported="false"/>
+
         <receiver
             android:name=".widget.QuoteWidgetProvider"
             android:label="@string/widget_title">
