@@ -5,6 +5,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,6 +15,9 @@ import com.db.chart.view.LineChartView;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by niteshgarg on 09/04/16.
@@ -34,7 +38,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         mLineChart = (LineChartView) findViewById(R.id.linechart);
 
         Intent intent = getIntent();
-        Bundle args = new Bundle();
         args.putString("symbol", intent.getStringExtra("symbol"));
         Log.e(LOG_TAG, args.getString("symbol"));
         getLoaderManager().initLoader(CURSOR_LOADER_ID, args, this);
@@ -59,12 +62,20 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         mCursor = data;
         mCursor.moveToFirst();
         int i = 1;
+
+        ArrayList<Float> range = new ArrayList<Float>();
         while (mCursor.moveToNext()){
             float price = Float.parseFloat(mCursor.getString(mCursor.getColumnIndex(QuoteColumns.BIDPRICE)));
-            mLineSet.addPoint("test " + i, price);
+            range.add(price);
+            mLineSet.addPoint(Integer.toString(i), price);
             i++;
         }
 
+        int minRange = Math.round(Collections.min(range));
+        int maxRange = Math.round(Collections.max(range));
+        mLineSet.setDotsColor(Color.parseColor("#00BFFF"));
+
+        mLineChart.setAxisBorderValues(minRange, maxRange);
         mLineChart.addData(mLineSet);
         mLineChart.show();
 
